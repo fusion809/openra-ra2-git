@@ -14,7 +14,7 @@ depends=('mono' 'ttf-dejavu' 'openal' 'libgl' 'freetype2' 'sdl2' 'lua51' 'hicolo
 makedepends=('dos2unix' 'git' 'unzip' 'msbuild')
 provides=('openra-ra2')
 options=(!strip)
-source=("git+${url}.git"
+source=("git+https://github.com/penev2/ra2.git#branch=updateModTo202212-devtest"
 "openra-ra2"
 "openra-ra2.appdata.xml"
 "openra-ra2.desktop")
