@@ -2,7 +2,7 @@
 
 pkgname=openra-ra2-git
 _pkgname=${pkgname/-git}
-pkgver=1110.git.6bfd2da
+pkgver=1137.git.2a29249
 pkgrel=1
 pkgdesc="An OpenRA mod inspired by Command & Conquer: Red Alert 2 "
 arch=(x86_64)
@@ -10,16 +10,16 @@ url="https://github.com/OpenRA/ra2"
 license=('GPL3')
 install=openra-ra2.install
 depends=('mono' 'ttf-dejavu' 'openal' 'libgl' 'freetype2' 'sdl2' 'lua51' 'hicolor-icon-theme' 'gtk-update-icon-cache'
-         'desktop-file-utils' 'xdg-utils' 'zenity')
-makedepends=('dos2unix' 'git' 'unzip' 'msbuild')
+         'desktop-file-utils' 'xdg-utils' 'zenity' 'dotnet-sdk-6.0')
+makedepends=('dos2unix' 'git' 'unzip' 'msbuild' 'dotnet-host')
 provides=('openra-ra2')
 options=(!strip)
-source=("git+https://github.com/penev2/ra2.git#branch=updateModTo202212-devtest"
+source=("git+${url}.git"
 "openra-ra2"
 "openra-ra2.appdata.xml"
 "openra-ra2.desktop")
 md5sums=('SKIP'
-         '02a35f538ddf34eb00489b15560bec53'
+         '9279e5ffeac6428d256e816f2a6dce07'
          '5f9d4e39293302ff69f7a701c870e635'
          '882b9d629dde1ecbcd2098a2e0b96b1b')
 
@@ -44,11 +44,13 @@ build() {
 
 package() {
     cd $srcdir/ra2
-    mkdir -p $pkgdir/usr/{lib/${_pkgname}/mods,bin,share/pixmaps,share/doc/packages/openra-ra2,share/applications,share/appdata}
-    cp -r engine/{glsl,lua,AUTHORS,COPYING,bin/*.{dll,so,exe}*,'global mix database.dat',VERSION} $pkgdir/usr/lib/openra-ra2
+    mkdir -p $pkgdir/usr/{lib/${_pkgname}/mods,bin,share/pixmaps,share/doc/packages/${_pkgname},share/applications,share/appdata}
+    cp -r mod.config $pkgdir/usr/lib/${_pkgname}
+    sed -i -e "s|./engine\"|/usr/lib/${_pkgname}\"|g" $pkgdir/usr/lib/${_pkgname}/mod.config
+    cp -r engine/{glsl,lua,AUTHORS,COPYING,bin,'global mix database.dat',VERSION} $pkgdir/usr/lib/${_pkgname}
     cp -r mods/ra2 $pkgdir/usr/lib/${_pkgname}/mods
     cp -r engine/mods/{common,modcontent} $pkgdir/usr/lib/${_pkgname}/mods
-    install -Dm755 $srcdir/openra-ra2 $pkgdir/usr/bin/openra-ra2
+    install -Dm755 $srcdir/${_pkgname} $pkgdir/usr/bin/${_pkgname}
     cp -r $srcdir/../openra-ra2.appdata.xml $pkgdir/usr/share/appdata/openra-ra2.appdata.xml
     cp -r README.md $pkgdir/usr/share/doc/packages/${_pkgname}/README.md
     ln -sf /usr/share/icons/hicolor/512x512/apps/${_pkgname}.png ${pkgdir}/usr/share/pixmaps/${_pkgname}.png
